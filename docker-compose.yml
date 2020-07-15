@@ -1,0 +1,53 @@
+version: '3.1' 
+
+services:
+  vscode-docker-x11:
+    container_name: vscode-docker-x11
+    image: openkbs/vscode-docker-x11
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env
+    environment:
+      - CONTAINER_NAME=vscode-docker-x11
+      - USER_ID=${USER_ID:-1000}
+      - GROUP_ID=${GROUP_ID:-1000}
+      # - APP_HOME=${APP_HOME:-/home/developer/app}
+      # - APP_MAIN=${APP_MAIN:-setup.sh}
+      - DOCKER_HOST_IP=${DOCKER_HOST_IP:-192.168.0.160}
+      - DOCKER_HOST_NAME=${DOCKER_HOST_NAME:-solar01}
+      - DISPLAY=$DISPLAY
+      - 'DBUS_SYSTEM_BUS_ADDRESS=unix:path=/host/run/dbus/system_bus_socket'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /run/dbus:/host/run/dbus
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      #- ./certificates:/app/certificates
+      ## -- Use current directory as root for mapping Volumes: --
+      #- ./app:/home/developer/app
+      #- ./workspace:/home/developer/workspace
+      #- ./data:/home/developer/data
+      ## -- Use $HOME/data-docker/ directory as root for mapping Volumes: --
+      - $HOME/data-docker/${CONTAINER_NAME}/app:/home/developer/app
+      - $HOME/data-docker/${CONTAINER_NAME}/workspace:/home/developer/workspace
+      - $HOME/data-docker/${CONTAINER_NAME}/data:/home/developer/data
+ 
+    ## -------------------------------
+    ## -- Change to your specific port
+    ## -------------------------------
+    # ports:
+    #   - "12345:12345"
+
+    ## -----------------------------
+    ## -- Network setup if needed --
+    ## -----------------------------
+    # networks:
+    #  - dev_network
+
+#networks:
+#  dev_network:
+#    external:
+#      name: dev_network
+
+
